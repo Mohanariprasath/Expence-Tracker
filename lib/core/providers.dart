@@ -11,8 +11,7 @@ final storageProvider = Provider<StorageService>(
 );
 
 final apiKeyProvider = StateProvider<String>((ref) {
-  final storage = ref.watch(storageProvider);
-  return storage.getApiKey() ?? dotenv.env['GEMINI_API_KEY'] ?? "";
+  return dotenv.env['GEMINI_API_KEY'] ?? "";
 });
 
 final geminiProvider = Provider<GeminiService>((ref) {
@@ -23,6 +22,18 @@ final geminiProvider = Provider<GeminiService>((ref) {
 final themeModeProvider = StateProvider<bool>((ref) {
   final storage = ref.watch(storageProvider);
   return storage.getIsDarkMode();
+});
+
+// System theme toggle - if true, use system theme instead of manual dark mode
+final useSystemThemeProvider = StateProvider<bool>((ref) {
+  final storage = ref.watch(storageProvider);
+  return storage.getUseSystemTheme();
+});
+
+// Accent color provider - stores color value as int
+final accentColorProvider = StateProvider<int>((ref) {
+  final storage = ref.watch(storageProvider);
+  return storage.getAccentColor();
 });
 
 final transactionsProvider = StreamProvider.autoDispose<List<Transaction>>((

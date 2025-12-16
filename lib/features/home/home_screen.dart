@@ -264,36 +264,175 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final t = transactions[index];
-                    return Card(
-                      margin: EdgeInsets.zero,
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: t.type.name == 'income'
-                              ? Colors.green.withValues(alpha: 0.1)
-                              : Colors.red.withValues(alpha: 0.1),
-                          child: Icon(
-                            t.type.name == 'income'
-                                ? Icons.arrow_downward
-                                : Icons.arrow_upward,
-                            color: t.type.name == 'income'
-                                ? Colors.green
-                                : Colors.red,
-                            size: 20,
+                    return Dismissible(
+                      key: Key(t.id),
+                      direction: DismissDirection.endToStart,
+                      confirmDismiss: (direction) async {
+                        // Show confirmation dialog
+                        return await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Delete Transaction?'),
+                            content: Text(
+                              'Are you sure you want to delete "${t.title}"?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                                child: const Text('Delete'),
+                              ),
+                            ],
                           ),
+                        );
+                      },
+                      onDismissed: (direction) async {
+                        // Store transaction for undo
+                        final deletedTransaction = t;
+
+                        // Delete from storage
+                        await ref
+                            .read(transactionListProvider.notifier)
+                            .deleteTransaction(t.id);
+
+                        // Show snackbar with undo
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Deleted "${t.title}"'),
+                              action: SnackBarAction(
+                                label: 'Undo',
+                                onPressed: () async {
+                                  // Restore transaction
+                                  await ref
+                                      .read(transactionListProvider.notifier)
+                                      .addTransaction(deletedTransaction);
+                                },
+                              ),
+                              duration: const Duration(seconds: 4),
+                            ),
+                          );
+                        }
+                      },
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        title: Text(
-                          t.title,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(DateFormat('MMM d').format(t.date)),
-                        trailing: Text(
-                          "${t.type.name == 'income' ? '+' : '-'}${CurrencyUtils.format(t.amount)}",
-                          style: TextStyle(
-                            color: t.type.name == 'income'
-                                ? Colors.green
-                                : Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: t.type.name == 'income'
+                                ? Colors.green.withValues(alpha: 0.1)
+                                : Colors.red.withValues(alpha: 0.1),
+                            child: Icon(
+                              t.type.name == 'income'
+                                  ? Icons.arrow_downward
+                                  : Icons.arrow_upward,
+                              color: t.type.name == 'income'
+                                  ? Colors.green
+                                  : Colors.red,
+                              size: 20,
+                            ),
+                          ),
+                          title: Text(
+                            t.title,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(DateFormat('MMM d').format(t.date)),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "${t.type.name == 'income' ? '+' : '-'}${CurrencyUtils.format(t.amount)}",
+                                style: TextStyle(
+                                  color: t.type.name == 'income'
+                                      ? Colors.green
+                                      : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline),
+                                iconSize: 20,
+                                color: Colors.red,
+                                onPressed: () async {
+                                  // Show confirmation dialog
+                                  final confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Delete Transaction?'),
+                                      content: Text(
+                                        'Are you sure you want to delete "${t.title}"?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, true),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Colors.red,
+                                          ),
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirmed == true && context.mounted) {
+                                    // Store for undo
+                                    final deletedTransaction = t;
+
+                                    // Delete
+                                    await ref
+                                        .read(transactionListProvider.notifier)
+                                        .deleteTransaction(t.id);
+
+                                    // Show undo snackbar
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Deleted "${t.title}"'),
+                                          action: SnackBarAction(
+                                            label: 'Undo',
+                                            onPressed: () async {
+                                              await ref
+                                                  .read(
+                                                    transactionListProvider
+                                                        .notifier,
+                                                  )
+                                                  .addTransaction(
+                                                    deletedTransaction,
+                                                  );
+                                            },
+                                          ),
+                                          duration: const Duration(seconds: 4),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),

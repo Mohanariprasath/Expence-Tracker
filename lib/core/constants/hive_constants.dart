@@ -7,4 +7,6 @@ class HiveConstants {
   static const String apiKey = 'gemini_api_key';
   static const String themeMode = 'theme_mode';
   static const String userName = 'user_name';
+  static const String useSystemTheme = 'use_system_theme';
+  static const String accentColor = 'accent_color';
 }

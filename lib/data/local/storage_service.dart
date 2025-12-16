@@ -8,6 +8,10 @@ class StorageService {
   late Box<Goal> _goalBox;
   late Box _settingsBox;
 
+  // Expose boxes for operations like clear
+  Box<Transaction> get transactionBox => _transactionBox;
+  Box<Goal> get goalBox => _goalBox;
+
   Future<void> init() async {
     _transactionBox = await Hive.openBox<Transaction>(
       HiveConstants.transactionBox,
@@ -61,5 +65,24 @@ class StorageService {
 
   Future<void> saveThemeMode(bool isDark) async {
     await _settingsBox.put(HiveConstants.themeMode, isDark);
+  }
+
+  bool getUseSystemTheme() {
+    return _settingsBox.get(HiveConstants.useSystemTheme, defaultValue: false);
+  }
+
+  Future<void> saveUseSystemTheme(bool useSystem) async {
+    await _settingsBox.put(HiveConstants.useSystemTheme, useSystem);
+  }
+
+  int getAccentColor() {
+    return _settingsBox.get(
+      HiveConstants.accentColor,
+      defaultValue: 0xFF6C63FF, // Default purple
+    );
+  }
+
+  Future<void> saveAccentColor(int colorValue) async {
+    await _settingsBox.put(HiveConstants.accentColor, colorValue);
   }
 }
