@@ -101,7 +101,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       color: Color(accentColor),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Colors.grey.withOpacity(0.3),
+                        color: Colors.grey.withValues(alpha: 0.3),
                         width: 2,
                       ),
                     ),
@@ -240,7 +240,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   final storage = ref.read(storageProvider);
                   await storage.saveAccentColor(colorValue);
                   ref.read(accentColorProvider.notifier).state = colorValue;
-                  if (mounted) Navigator.pop(context);
+                  if (context.mounted) Navigator.pop(context);
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -254,13 +254,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         border: Border.all(
                           color: isSelected
                               ? Colors.white
-                              : Colors.grey.withOpacity(0.3),
+                              : Colors.grey.withValues(alpha: 0.3),
                           width: isSelected ? 4 : 2,
                         ),
                         boxShadow: isSelected
                             ? [
                                 BoxShadow(
-                                  color: Color(colorValue).withOpacity(0.4),
+                                  color: Color(
+                                    colorValue,
+                                  ).withValues(alpha: 0.4),
                                   blurRadius: 12,
                                   spreadRadius: 2,
                                 ),
@@ -328,7 +330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ref.invalidate(transactionListProvider);
               ref.invalidate(goalListProvider);
 
-              if (mounted) {
+              if (context.mounted) {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

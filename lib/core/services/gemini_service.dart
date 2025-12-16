@@ -3,18 +3,30 @@ import 'package:my_app/data/models/transaction_model.dart';
 import 'package:my_app/data/models/goal_model.dart';
 import 'package:intl/intl.dart';
 import 'package:my_app/core/utils/currency_utils.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GeminiService {
-  final String apiKey;
-  late final GenerativeModel _model;
-
-  GeminiService(this.apiKey) {
-    _model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+  static String get _apiKey {
+    try {
+      if (!dotenv.isInitialized) return 'YOUR_GEMINI_API_KEY_HERE';
+      return dotenv.env['GEMINI_API_KEY'] ?? 'YOUR_GEMINI_API_KEY_HERE';
+    } catch (_) {
+      return 'YOUR_GEMINI_API_KEY_HERE';
+    }
   }
 
+  late final GenerativeModel _model;
+
+  GeminiService() {
+    _model = GenerativeModel(model: 'gemini-pro', apiKey: _apiKey);
+  }
+
+  bool get _hasValidKey =>
+      _apiKey.isNotEmpty && !_apiKey.contains('YOUR_GEMINI_API_KEY');
+
   Future<String> generateFinancialTip(List<Transaction> transactions) async {
-    if (apiKey.isEmpty) {
-      return "Please set your API Key in Settings.";
+    if (!_hasValidKey) {
+      return "AI features are disabled. Please configure the internal API key.";
     }
 
     if (transactions.isEmpty) {
@@ -43,8 +55,8 @@ class GeminiService {
   }
 
   Future<String> generateMonthlyReport(List<Transaction> transactions) async {
-    if (apiKey.isEmpty) {
-      return "Please set your API Key in Settings to generate reports.";
+    if (!_hasValidKey) {
+      return "AI features are disabled. Setup API key in source code.";
     }
     final expenseTotal = transactions
         .where((t) => t.type == TransactionType.expense)
@@ -75,13 +87,13 @@ class GeminiService {
       final response = await _model.generateContent(content);
       return response.text ?? "Could not generate report.";
     } catch (e) {
-      return "Error generating report. Please check your internet connection or API key.";
+      return "Error generating report. Please check internet connection.";
     }
   }
 
   Future<String> generateGoalPlan(Goal goal) async {
-    if (apiKey.isEmpty) {
-      return "Please set your API Key in Settings to generate a plan.";
+    if (!_hasValidKey) {
+      return "AI Plan disabled. Setup API key in source code.";
     }
     final prompt =
         """
@@ -109,8 +121,8 @@ class GeminiService {
     String message, {
     List<Transaction>? contextData,
   }) async* {
-    if (apiKey.isEmpty) {
-      yield "Please set your Gemini API Key in the Settings screen to start chatting.";
+    if (!_hasValidKey) {
+      yield "AI Chat disabled. Please configure the internal API key.";
       return;
     }
 
@@ -130,7 +142,7 @@ class GeminiService {
         if (chunk.text != null) yield chunk.text!;
       }
     } catch (e) {
-      yield "I'm having trouble connecting to Gemini. Please check your API Key in Settings and your internet connection.";
+      yield "I'm having trouble connecting to Gemini. Please check internet connection.";
     }
   }
 }

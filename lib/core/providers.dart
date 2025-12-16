@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_app/core/services/gemini_service.dart';
 import 'package:my_app/data/local/storage_service.dart';
 import 'package:my_app/data/models/goal_model.dart';
@@ -10,13 +9,8 @@ final storageProvider = Provider<StorageService>(
   (ref) => throw UnimplementedError(),
 );
 
-final apiKeyProvider = StateProvider<String>((ref) {
-  return dotenv.env['GEMINI_API_KEY'] ?? "";
-});
-
 final geminiProvider = Provider<GeminiService>((ref) {
-  final apiKey = ref.watch(apiKeyProvider);
-  return GeminiService(apiKey);
+  return GeminiService();
 });
 
 final themeModeProvider = StateProvider<bool>((ref) {
@@ -67,6 +61,19 @@ class TransactionsNotifier extends StateNotifier<List<Transaction>> {
 
   Future<void> deleteTransaction(String id) async {
     await _storage.deleteTransaction(id);
+    load();
+  }
+
+  Future<void> deleteTransactions(List<String> ids) async {
+    await _storage.transactionBox.deleteAll(ids);
+    load();
+  }
+
+  Future<void> addTransactions(List<Transaction> transactions) async {
+    final Map<dynamic, Transaction> entries = {
+      for (var t in transactions) t.id: t,
+    };
+    await _storage.transactionBox.putAll(entries);
     load();
   }
 }

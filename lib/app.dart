@@ -12,7 +12,7 @@ class AntigravityApp extends ConsumerWidget {
     final isDarkMode = ref.watch(themeModeProvider);
 
     return MaterialApp(
-      title: 'Antigravity',
+      title: 'Expense Tracker',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

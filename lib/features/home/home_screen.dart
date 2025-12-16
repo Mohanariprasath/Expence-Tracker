@@ -124,6 +124,77 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  Future<void> _handleMenuAction(
+    BuildContext context,
+    WidgetRef ref,
+    String value,
+  ) async {
+    if (value == 'clear_month') {
+      final transactions = ref.read(transactionListProvider);
+      final now = DateTime.now();
+      final monthlyTransactions = transactions
+          .where((t) => t.date.year == now.year && t.date.month == now.month)
+          .toList();
+
+      if (monthlyTransactions.isEmpty) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No data found for this month.')),
+          );
+        }
+        return;
+      }
+
+      // Confirmation Dialog
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Clear Monthly Data?'),
+          content: Text(
+            'This will delete ${monthlyTransactions.length} transactions for ${DateFormat('MMMM').format(now)}. This action cannot be undone immediately (use Undo below).',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete All'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed == true) {
+        // Perform Delete
+        final ids = monthlyTransactions.map((t) => t.id).toList();
+        await ref
+            .read(transactionListProvider.notifier)
+            .deleteTransactions(ids);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Cleared ${monthlyTransactions.length} entries'),
+              action: SnackBarAction(
+                label: 'Undo',
+                onPressed: () async {
+                  // Restore
+                  await ref
+                      .read(transactionListProvider.notifier)
+                      .addTransactions(monthlyTransactions);
+                },
+              ),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionListProvider);
@@ -142,9 +213,22 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
+          PopupMenuButton<String>(
+            onSelected: (value) => _handleMenuAction(context, ref, value),
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'clear_month',
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today, color: Colors.grey),
+                      SizedBox(width: 8),
+                      Text('Clear Monthly Data'),
+                    ],
+                  ),
+                ),
+              ];
+            },
           ),
         ],
       ),
