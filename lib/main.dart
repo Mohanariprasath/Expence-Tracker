@@ -7,8 +7,11 @@ import 'package:my_app/data/local/storage_service.dart';
 import 'package:my_app/data/models/goal_model.dart';
 import 'package:my_app/data/models/transaction_model.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
   // Hive Initialization
   await Hive.initFlutter();

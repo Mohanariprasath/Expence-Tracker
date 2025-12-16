@@ -13,6 +13,10 @@ class GeminiService {
   }
 
   Future<String> generateFinancialTip(List<Transaction> transactions) async {
+    if (apiKey.isEmpty) {
+      return "Please set your API Key in Settings.";
+    }
+
     if (transactions.isEmpty) {
       return "Start consistent tracking to get personalized AI tips!";
     }
@@ -39,6 +43,9 @@ class GeminiService {
   }
 
   Future<String> generateMonthlyReport(List<Transaction> transactions) async {
+    if (apiKey.isEmpty) {
+      return "Please set your API Key in Settings to generate reports.";
+    }
     final expenseTotal = transactions
         .where((t) => t.type == TransactionType.expense)
         .fold(0.0, (sum, t) => sum + t.amount);
@@ -73,6 +80,9 @@ class GeminiService {
   }
 
   Future<String> generateGoalPlan(Goal goal) async {
+    if (apiKey.isEmpty) {
+      return "Please set your API Key in Settings to generate a plan.";
+    }
     final prompt =
         """
     I have a financial goal: ${goal.title}
@@ -99,6 +109,11 @@ class GeminiService {
     String message, {
     List<Transaction>? contextData,
   }) async* {
+    if (apiKey.isEmpty) {
+      yield "Please set your Gemini API Key in the Settings screen to start chatting.";
+      return;
+    }
+
     String contextStr = "";
     if (contextData != null && contextData.isNotEmpty) {
       contextStr =
@@ -109,14 +124,13 @@ class GeminiService {
         "User: $message\n$contextStr\nSystem: You are Antigravity, a helpful financial assistant. Be concise and friendly.";
 
     try {
-      // For simplicity in this demo, accessing generateContentStream
       final content = [Content.text(prompt)];
       final stream = _model.generateContentStream(content);
       await for (final chunk in stream) {
         if (chunk.text != null) yield chunk.text!;
       }
     } catch (e) {
-      yield "I'm having trouble connecting to the server right now.";
+      yield "I'm having trouble connecting to Gemini. Please check your API Key in Settings and your internet connection.";
     }
   }
 }

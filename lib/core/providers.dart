@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_app/core/services/gemini_service.dart';
 import 'package:my_app/data/local/storage_service.dart';
 import 'package:my_app/data/models/goal_model.dart';
@@ -11,7 +12,7 @@ final storageProvider = Provider<StorageService>(
 
 final apiKeyProvider = StateProvider<String>((ref) {
   final storage = ref.watch(storageProvider);
-  return storage.getApiKey() ?? "";
+  return storage.getApiKey() ?? dotenv.env['GEMINI_API_KEY'] ?? "";
 });
 
 final geminiProvider = Provider<GeminiService>((ref) {
