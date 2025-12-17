@@ -11,3 +11,9 @@
     - [x] Implement `DashboardScreen` charts <!-- id: 9 -->
 - [x] Implement Goal Planner <!-- id: 6 -->
 - [x] Implement Chat Logic <!-- id: 7 -->
+- [x] Fix Add Transaction Dialog
+    - [x] Fix overflow issue
+    - [x] Align Type and Date fields
+- [x] Enable AI Features by Default
+    - [x] Implement AI service fallback
+    - [x] Remove "disabled" state from UI
