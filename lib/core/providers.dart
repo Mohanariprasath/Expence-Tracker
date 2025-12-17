@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_app/core/services/gemini_service.dart';
+import 'package:my_app/core/services/openai_service.dart';
 import 'package:my_app/data/local/storage_service.dart';
 import 'package:my_app/data/models/goal_model.dart';
 import 'package:my_app/data/models/transaction_model.dart';
@@ -9,8 +9,8 @@ final storageProvider = Provider<StorageService>(
   (ref) => throw UnimplementedError(),
 );
 
-final geminiProvider = Provider<GeminiService>((ref) {
-  return GeminiService();
+final openAIProvider = Provider<OpenAIService>((ref) {
+  return OpenAIService();
 });
 
 final themeModeProvider = StateProvider<bool>((ref) {

@@ -31,9 +31,7 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Goal Title (e.g., New Laptop)',
-                ),
+                decoration: const InputDecoration(labelText: 'Goal '),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -115,7 +113,7 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
 
   Future<void> _generatePlanForGoal(Goal goal) async {
     try {
-      final gemini = ref.read(geminiProvider);
+      final gemini = ref.read(openAIProvider);
       final plan = await gemini.generateGoalPlan(goal);
 
       // Update goal with plan (Need to modify model to support copyWith or manual update)

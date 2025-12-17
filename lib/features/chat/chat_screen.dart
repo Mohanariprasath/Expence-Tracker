@@ -35,7 +35,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
     _scrollToBottom();
 
-    final gemini = ref.read(geminiProvider);
+    final gemini = ref.read(openAIProvider);
     final transactions = ref.read(transactionListProvider);
 
     // Stream response

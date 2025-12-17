@@ -266,7 +266,7 @@ class HomeScreen extends ConsumerWidget {
                                     const SizedBox(width: 8),
                                     Text(
                                       DateFormat(
-                                        'MMM d, yyyy',
+                                        'MMM d,yy',
                                       ).format(selectedDate),
                                       style: TextStyle(
                                         fontSize: 14,
@@ -397,7 +397,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionListProvider);
-    final gemini = ref.read(geminiProvider);
+    final gemini = ref.read(openAIProvider);
 
     return Scaffold(
       appBar: AppBar(
