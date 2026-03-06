@@ -1,6 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/flutter/website/main/src/assets/images/docs/flutter-logo.svg" width="100" alt="Flutter Logo"/>
-  <h1>💸 Expense Tracker pro & Antigravity AI</h1>
+  <h1> Expense Tracker pro</h1>
   <p><i>A next-generation, AI-powered personal finance manager built with Flutter.</i></p>
 
   <!-- Badges -->
@@ -14,7 +13,7 @@
 
 ---
 
-## 📖 Overview
+##  Overview
 
 **Expense Tracker** is a comprehensive Flutter-based application designed to help you manage your financial life effortlessly. What sets this app apart is its deep integration with **Antigravity AI Assistant**. The application not only tracks your transactions but actively understands your spending behavior to provide highly contextual financial advice, structured goals, and synthesized monthly reports.
 
@@ -22,52 +21,44 @@ Say goodbye to complex spreadsheets and hello to an intuitive, artificially inte
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 📊 **Intelligent Dashboard**
+###  **Intelligent Dashboard**
 - **Unified Overview:** Instantly view your total balance alongside your most recent income and expenses.
 - **Smart Insights:** A dynamic banner generates daily financial tips on your home screen based on your recent transactions (powered by Antigravity).
 - **Categorized Spending:** Distinct visualization for expenses vs. income.
 
-### 🤖 **Antigravity AI Personal Assistant**
+###  **Antigravity AI Personal Assistant**
 Built right into the application, tap the chat bubble and talk directly to your personal financial advisor.
 - **Ask Anything:** "How can I reduce my dining out expenses?"
 - **Monthly Reports:** Type `"Monthly Report"` to get a synthesized evaluation of your recent spending.
 - **Goal Planning:** Type `"Plan"` or `"Goal"` and the AI will analyze your financial data to help you save for your next milestone (e.g., a New Car).
 
-### 🎨 **Beautiful & Modern UI**
+###  **Beautiful & Modern UI**
 - **Material 3 Design:** Fully leverages Flutter's implementation of Material 3 for a fluid, accessible, and native-feeling user experience.
 - **Deep Purple Aesthetic:** A clean, calming, and focused color palette designed for minimum cognitive load.
 - **Smooth Animations:** Integrated scroll behaviors and fluid list interactions.
 
 ---
 
-## � Screenshots *(Placeholders)*
-
-| Dashboard | AI Chat Assistant |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/250x500.png?text=Dashboard+Screenshot" width="200" alt="Dashboard"> | <img src="https://via.placeholder.com/250x500.png?text=AI+Chat+Screenshot" width="200" alt="Chat View"> |
-
----
-
-## 🏗️ Architecture & Project Structure
+##  Architecture & Project Structure
 
 The project follows a modular, scalable architecture, separating core logic from features for maintainability.
 
 ```text
 lib/
- ├── main.dart                   # 🚀 Application Entry Point
+ ├── main.dart                   #  Application Entry Point
  └── src/
       ├── core/
-      │    └── models/           # 📦 Data schemas (Transaction, Goal)
+      │    └── models/           #  Data schemas (Transaction, Goal)
       └── features/
-           ├── antigravity/      # 🧠 AI Module: Chat screen & Antigravity AI Services
-           └── dashboard/        # 🏠 User UI: Home screen, Smart Tips, Balance widgets
+           ├── antigravity/      #  AI Module: Chat screen & Antigravity AI Services
+           └── dashboard/        #  User UI: Home screen, Smart Tips, Balance widgets
 ```
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Frontend Framework:** [Flutter](https://flutter.dev/) 
 - **Language:** [Dart](https://dart.dev/)
@@ -77,7 +68,7 @@ lib/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 To get a local copy of this project up and running, follow these steps.
 
@@ -111,8 +102,7 @@ Ensure you have the following installed on your machine:
    ```
 
 ---
-
-## 💡 Trying out the AI
+##  Trying out the AI
 
 Because this is a showcase, the app currently uses mock financial metadata to demonstrate the AI integration without requiring backend configuration.
 
@@ -124,7 +114,7 @@ Because this is a showcase, the app currently uses mock financial metadata to de
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -136,12 +126,8 @@ Contributions are what make the open-source community such an amazing place to l
 
 ---
 
-## 📝 License
+##  License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-
-<div align="center">
-  <b>Built with ❤️ using Flutter and Antigravity AI</b>
-</div>
